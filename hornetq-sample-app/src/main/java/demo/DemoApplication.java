@@ -1,5 +1,9 @@
 package demo;
 
+import hornetq.autoconfigure.HornetQConfigurationCustomizer;
+import org.hornetq.jms.server.config.JMSConfiguration;
+import org.hornetq.jms.server.config.impl.JMSConfigurationImpl;
+import org.hornetq.jms.server.config.impl.JMSQueueConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -17,6 +22,21 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
+	}
+
+	@Bean
+	public JMSConfiguration myJmsConfiguration() {
+		JMSConfiguration configuration = new JMSConfigurationImpl();
+		configuration.getQueueConfigurations().add(new JMSQueueConfigurationImpl("testQueue", null, false));
+		return configuration;
+	}
+
+	@Bean
+	public HornetQConfigurationCustomizer myHornetQCustomizer() {
+		return configuration -> {
+			configuration.setJMXManagementEnabled(true);
+			configuration.setJMXDomain("org.foo");
+		};
 	}
 
 	@Service
