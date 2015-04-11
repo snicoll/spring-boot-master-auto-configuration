@@ -12,7 +12,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@SpringBootApplication
+@SpringBootApplication //(exclude = HornetQAutoConfiguration.class)
 public class DemoApplication {
 
 	public static void main(String[] args) {

@@ -10,6 +10,8 @@
 
 	<modules>
 		<module>hornetq-sample-app</module>
+		<module>hornetq-spring-boot-autoconfigure</module>
+		<module>hornetq-spring-boot-starter</module>
 	</modules>
 
 </project>
