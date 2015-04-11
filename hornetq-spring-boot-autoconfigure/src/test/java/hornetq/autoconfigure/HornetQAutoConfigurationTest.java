@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 
@@ -58,9 +59,31 @@ public class HornetQAutoConfigurationTest {
 		assertInVmConnectionFactory(connectionFactory);
 	}
 
+	@Test
+	public void customizerIsApplied() {
+		load(CustomHornetQConfiguration.class);
+		org.hornetq.core.config.Configuration configuration = this.context
+				.getBean(org.hornetq.core.config.Configuration.class);
+		assertEquals("customFooBar", configuration.getName());
+	}
+
 
 	@Configuration
 	static class EmptyConfiguration {}
+
+	@Configuration
+	static class CustomHornetQConfiguration {
+
+		@Bean
+		public HornetQConfigurationCustomizer myHornetQCustomize() {
+			return new HornetQConfigurationCustomizer() {
+				@Override
+				public void customize(org.hornetq.core.config.Configuration configuration) {
+					configuration.setName("customFooBar");
+				}
+			};
+		}
+	}
 
 	private TransportConfiguration assertInVmConnectionFactory(
 			HornetQConnectionFactory connectionFactory) {

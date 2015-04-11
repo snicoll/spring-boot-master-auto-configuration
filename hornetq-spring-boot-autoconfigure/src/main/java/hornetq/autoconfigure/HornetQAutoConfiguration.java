@@ -110,6 +110,9 @@ public class HornetQAutoConfiguration {
 		@Autowired(required = false)
 		private List<TopicConfiguration> topicsConfiguration;
 
+		@Autowired(required = false)
+		private List<HornetQConfigurationCustomizer> configurationCustomizers;
+
 		@Bean
 		@ConditionalOnMissingBean
 		public org.hornetq.core.config.Configuration hornetQConfiguration() {
@@ -123,10 +126,19 @@ public class HornetQAutoConfiguration {
 				org.hornetq.core.config.Configuration configuration,
 				JMSConfiguration jmsConfiguration) {
 			EmbeddedJMS server = new EmbeddedJMS();
+			customize(configuration);
 			server.setConfiguration(configuration);
 			server.setJmsConfiguration(jmsConfiguration);
 			server.setRegistry(new HornetQNoOpBindingRegistry());
 			return server;
+		}
+
+		private void customize(org.hornetq.core.config.Configuration configuration) {
+			if (this.configurationCustomizers != null) {
+				for (HornetQConfigurationCustomizer customizer : this.configurationCustomizers) {
+					customizer.customize(configuration);
+				}
+			}
 		}
 
 		@Bean
