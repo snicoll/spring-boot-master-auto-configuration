@@ -1,8 +1,10 @@
 package hornetq.autoconfigure;
 
 import org.hornetq.api.core.TransportConfiguration;
+import org.hornetq.core.remoting.impl.invm.InVMConnectorFactory;
 import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
 import org.hornetq.jms.client.HornetQConnectionFactory;
+import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.junit.After;
 import org.junit.Test;
 
@@ -27,7 +29,7 @@ public class HornetQAutoConfigurationTest {
 
 	@Test
 	public void defaultNativeConnectionFactory() {
-		load(EmptyConfiguration.class);
+		load(EmptyConfiguration.class, "hornetq.mode=native");
 		JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
 		HornetQConnectionFactory connectionFactory = this.context
 				.getBean(HornetQConnectionFactory.class);
@@ -37,7 +39,8 @@ public class HornetQAutoConfigurationTest {
 
 	@Test
 	public void customNativeConnectionFactory() {
-		load(EmptyConfiguration.class, "hornetq.host=192.168.1.15", "hornetq.port=1234");
+		load(EmptyConfiguration.class, "hornetq.mode=native",
+				"hornetq.host=192.168.1.15", "hornetq.port=1234");
 		JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
 		HornetQConnectionFactory connectionFactory = this.context
 				.getBean(HornetQConnectionFactory.class);
@@ -45,9 +48,27 @@ public class HornetQAutoConfigurationTest {
 		assertNettyConnectionFactory(connectionFactory, "192.168.1.15", 1234);
 	}
 
+	@Test
+	public void embeddedConnectionFactory() {
+		load(EmptyConfiguration.class, "hornetq.mode=embedded");
+
+		assertEquals(1, this.context.getBeansOfType(EmbeddedJMS.class).size());
+		HornetQConnectionFactory connectionFactory = this.context
+				.getBean(HornetQConnectionFactory.class);
+		assertInVmConnectionFactory(connectionFactory);
+	}
+
 
 	@Configuration
 	static class EmptyConfiguration {}
+
+	private TransportConfiguration assertInVmConnectionFactory(
+			HornetQConnectionFactory connectionFactory) {
+		TransportConfiguration transportConfig = getSingleTransportConfiguration(connectionFactory);
+		assertEquals(InVMConnectorFactory.class.getName(),
+				transportConfig.getFactoryClassName());
+		return transportConfig;
+	}
 
 	private TransportConfiguration assertNettyConnectionFactory(
 			HornetQConnectionFactory connectionFactory, String host, int port) {
