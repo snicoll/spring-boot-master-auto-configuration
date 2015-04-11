@@ -21,9 +21,9 @@ class HornetQEmbeddedConfigurationFactory {
 		configuration.setSecurityEnabled(false);
 		configuration.setPersistenceEnabled(this.properties.isPersistent());
 
+		String dataDir = getDataDir();
+		configuration.setJournalDirectory(dataDir + "/journal");
 		if (this.properties.isPersistent()) {
-			String dataDir = getDataDir();
-			configuration.setJournalDirectory(dataDir + "/journal");
 			configuration.setJournalType(JournalType.NIO);
 			configuration.setLargeMessagesDirectory(dataDir + "/largemessages");
 			configuration.setBindingsDirectory(dataDir + "/bindings");
@@ -33,6 +33,9 @@ class HornetQEmbeddedConfigurationFactory {
 		TransportConfiguration transportConfiguration = new TransportConfiguration(
 				InVMAcceptorFactory.class.getName());
 		configuration.getAcceptorConfigurations().add(transportConfiguration);
+
+		configuration.setClusterPassword("SpringBootRulez");
+
 		return configuration;
 	}
 
