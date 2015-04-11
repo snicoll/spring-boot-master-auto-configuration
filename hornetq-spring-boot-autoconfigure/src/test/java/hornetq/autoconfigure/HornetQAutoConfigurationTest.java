@@ -35,6 +35,16 @@ public class HornetQAutoConfigurationTest {
 		assertNettyConnectionFactory(connectionFactory, "localhost", 5445);
 	}
 
+	@Test
+	public void customNativeConnectionFactory() {
+		load(EmptyConfiguration.class, "hornetq.host=192.168.1.15", "hornetq.port=1234");
+		JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
+		HornetQConnectionFactory connectionFactory = this.context
+				.getBean(HornetQConnectionFactory.class);
+		assertEquals(jmsTemplate.getConnectionFactory(), connectionFactory);
+		assertNettyConnectionFactory(connectionFactory, "192.168.1.15", 1234);
+	}
+
 
 	@Configuration
 	static class EmptyConfiguration {}
