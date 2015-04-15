@@ -1,0 +1,29 @@
+== Master Spring Boot auto-configuration
+
+This is the sample app used during the Master Spring Boot auto-configuration talk.
+
+This repository contains one commit per step to reach a complete auto-configuration. Refer to the commit messages for more information on what each step does.
+
+NOTE: The slides of the session are https://speakerdeck.com/snicoll/master-spring-boot-auto-configuration[available on speackerdeck].
+
+=== Building and running
+
+Some of these steps require a local HornetQ installation. You can download HornetQ http://hornetq.jboss.org/downloads.html[from the official web site].
+
+You can start with a basic example that uses Spring Boot's HornetQ support with the following command in this repository:
+
+```
+git checkout 7ef8191
+```
+
+[NOTE]
+====
+This demo requires a `testQueue` to be created in your local broker. To do so, open the `hornetq-jms.xml` configuration file and add the following entry:
+```xml
+<queue name="testQueue">
+    <entry name="/queue/testQueue"/>
+</queue>
+```
+====
+
+Once you reach the point where the official HornetQ support is removed, you can either checkout https://github.com/snicoll/spring-boot/tree/auto-config-demo[snicoll/auto-config-demo] and build that locally (`mvn clean install`) to get a customized `1.2.4-BUILD.SNAPSHOT`) or exclude the `HornetQAutoConfiguration` (see `DemoApplication`).
