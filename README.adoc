@@ -4,7 +4,7 @@ This is the sample app used during the Master Spring Boot auto-configuration tal
 
 This repository contains one commit per step to reach a complete auto-configuration. Refer to the commit messages for more information on what each step does.
 
-NOTE: The slides of the session are https://speakerdeck.com/snicoll/master-spring-boot-auto-configuration[available on speackerdeck].
+NOTE: See http://2015.con-fess.com/ZW98zvVz/ConFESS_2015_Day2_1100_R1_Stephane_Nicoll_master-auto-config.mp4[the recording of this presentation at ConFESS]. The slides of the session are also https://speakerdeck.com/snicoll/master-spring-boot-auto-configuration[available on speackerdeck].
 
 === Building and running
 
